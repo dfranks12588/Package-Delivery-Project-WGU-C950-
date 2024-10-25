@@ -37,12 +37,12 @@ class HashTable:
 
 
 
+#testing data
+#hash_table = HashTable()
+#hash_table.insert("grade_one", 3)
 
-hash_table = HashTable()
-hash_table.insert("grade_one", 3)
+#insert_test = hash_table.lookup("grade_one")
+#print(f"The value of the key is {insert_test}")
 
-insert_test = hash_table.lookup("grade_one")
-print(f"The value of the key is {insert_test}")
-
-remove_test = hash_table.remove("grade_one")
-print(f"Key 'grade_one' removed: {remove_test}" )
+#remove_test = hash_table.remove("grade_one")
+#print(f"Key 'grade_one' removed: {remove_test}" )
