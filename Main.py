@@ -3,6 +3,7 @@ import csv
 
 from HashTable import HashTable
 from Package import Package
+from Truck import Truck
 
 package_hash_table = HashTable()
 packages = []
@@ -31,37 +32,54 @@ def load_package(file_name, hash_table):
             packages.append(package)
             hash_table.insert(package_id, package)
 
-load_package("CSV/packages.csv", package_hash_table)
-#package_test = package_hash_table.lookup(5)
-#print(package_test)
-
-
 
 def load_distance(file_name):
     with open(file_name, mode='r') as distance_file:
         csv_reader = csv.reader(distance_file)
         for row in csv_reader:
-            distance_row = [float(distance) if distance.strip() else 0.0 for distance in row]
+            distance_row = []
+            for distance in row:
+                try:
+                    distance_row.append(float(distance) if distance.strip() else 0.0)
+                except ValueError:
+                    print("Error")
+                    distance_row.append(0.0)
             distance_matrix.append(distance_row)
-
-load_distance("CSV/distances.csv")
-print(distance_matrix)
 
 
 def load_address(file_name):
     with open(file_name, mode='r') as csv_file:
         csv_reader = list(csv.reader(csv_file))
-        for index, row in enumerate(csv_reader):
-            address = row[0].strip()
-            address_dict[address] = index
-            address_list.append(address)
+        for row in csv_reader:
+            index = int(row[0].strip())
+            address_name = row[1].strip()
+            address_full = f"{address_name}, {row[2].strip()}"
+            address_dict[address_full] = index
+            address_list.append(address_full)
+            #print(f"Loaded address '{address_full} with the index {index}")
+
+
 
 def address_lookup(address):
     return address_dict.get(address, None)
 
+load_package("CSV/packages.csv", package_hash_table)
 load_address("CSV/addresses.csv")
-address_test = address_lookup("Sugar House Park,1330 2100 S")
-print(address_test)
+load_distance("CSV/distances.csv")
 
+#address_test = address_lookup("Western Governors University, 4001 South 700 East")
+#package_test = package_hash_table.lookup(1)
+#print(address_test)
+#print(distance_matrix[:3])
+#print(package_test)
 
+truck_1 = Truck(1)
+truck_1.load_package(packages[0])
+truck_2 = Truck(2)
+truck_3 = Truck(3)
 
+def printout_truck_load(truck):
+    for package in truck.packages:
+        print(f"Package {package.id} to {package.address}")
+
+printout_truck_load(truck_1)

@@ -36,3 +36,28 @@
                 Utilize a list or dictionary to store the address information
                 Create an address_lookup(string address) function that will translate the specific string address into a numeric value that can be returned.
                     NOTE: The address_lookup() function is only needed if you utilize the 2D array (from OPTION 1.1 above).
+
+B               
+    Phase II – Implement Dynamic Core Algorithm
+        Optimal Industry Solution (OPTION 1)
+
+                i.     Create an algorithm that will look at ALL package data (distance, time restrictions, special notes) and will determine which package goes on which truck and in which order.
+
+                Greedy algorithms are good for this because they can optimize solutions based on more than one parameter.
+                Dijkstra’s is good to produce a minimum spanning tree (MST) that usually contains branches. In our case, you need the best round trip solution without branches. So be careful choosing Dijkstra’s as your solution unless you really understand the algorithm well and know how you are going to convert the MST to a round trip solution.
+
+                ii.     Load the trucks with the appropriate packages.
+
+                This typically means creating a list that stores the package ids associated with each truck
+                    Later, you can use the hash table.lookup(package id) method to access that package associated with each package id.
+                    The hash table should be a primary table for the latest information about the packages.
+                    Do not duplicate the package objects outside of the hash table. This will lead to synchronization issues later on.
+
+                iii.     Deliver the packages
+
+                Loop through the packages assigned to the truck in order (since the order was determined by the algorithm above)
+                Deliver the package by timestamping it in the hash table.
+                    NOTE: Don’t be afraid to add additional timestamp fields within the package class.
+                Keep track of the distance traveled starting from the hub
+                Display total round-trip distance once all packages have been delivered.
+                    This needs to include the distance back to the hub when the truck is finished
