@@ -8,6 +8,8 @@ class Package:
         self.deadline = deadline
         self.weight = weight
         self.status = status
+        self.delivery_time = None
+        self.depart_time = None
 
     def __str__(self):
         return (f"Package ID: {self.id}\n"
@@ -18,3 +20,12 @@ class Package:
                 f"Weight: {self.weight}\n"
                 f"Status: {self.status}"
                 )
+
+    def status_update(self, convert_time):
+        if self.delivery_time < convert_time:
+            self.status = "Package has been delivered"
+        elif self.depart_time > convert_time:
+            self.status = "Package is en route"
+        else:
+            self.status = "Package is at the hub"
+
