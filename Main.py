@@ -1,5 +1,5 @@
 import csv
-
+import datetime
 
 from HashTable import HashTable
 from Package import Package
@@ -73,13 +73,18 @@ load_distance("CSV/distances.csv")
 #print(distance_matrix[:3])
 #print(package_test)
 
-truck_1 = Truck(1)
-truck_1.load_package(packages[0])
-truck_2 = Truck(2)
-truck_3 = Truck(3)
+
+#truck_id, capacity, speed, package_id, mileage, address, depart_time
+truck_1 = Truck(1, 16, 18, [1, 13, 14, 15, 16, 19, 20, 29, 30, 31, 34, 37, 40],
+                0.0, "4001 South 700 East", datetime.timedelta(hours=8), package_hash_table)
+truck_2 = Truck(2, 16, 18, [3, 6, 10, 11, 18, 21, 22, 23, 24, 25, 26, 27, 28, 36, 38],
+                0.0, "4001 South 700 East", datetime.timedelta(hours = 10), package_hash_table)
+truck_3 = Truck(3, 16, 18, [2, 4, 5, 7, 8, 9, 12, 17, 32, 33, 35, 39],
+                0.0, "4001 South 700 East", datetime.timedelta(hours=11), package_hash_table)
 
 def printout_truck_load(truck):
     for package in truck.packages:
         print(f"Package {package.id} to {package.address}")
 
 printout_truck_load(truck_1)
+#print(truck_2)
