@@ -1,6 +1,6 @@
 class Package:
     def __init__(self, id_num, address, city, state, zip, deadline, weight, status):
-        self.id = id_num
+        self.id_num = id_num
         self.address = address
         self.city = city
         self.state = state
@@ -12,7 +12,7 @@ class Package:
         self.depart_time = None
 
     def __str__(self):
-        return (f"Package ID: {self.id}\n"
+        return (f"Package ID: {self.id_num}\n"
                 f"Address: {self.address}\n"
                 f"Deadline: {self.deadline}\n"
                 f"City: {self.city}\n"
