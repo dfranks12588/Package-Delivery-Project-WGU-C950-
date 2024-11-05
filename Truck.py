@@ -11,17 +11,18 @@ class Truck:
         self.mileage = mileage
         self.address = address
         self.depart_time = depart_time
+        self.package_hash_table = package_hash_table
         self.packages = []
 
-
+        #print(f"Initializing Truck {self.truck_id} with package ids: {self.package_ids}")
         for package_id in package_ids:
             package = package_hash_table.lookup(package_id)
             if package:
                 self.packages.append(package)
-                print(f"Loaded package {package.id_num} for truck {self.truck_id}")
-            else:
-                print(f" Package id {package_id} not found in hashtable")
-        print(f"Truck {truck_id} has {len(self.packages)} loaded packs")
+                #print(f"Loaded package {package.id_num} for truck {self.truck_id}")
+            #else:
+            #    print(f" Package id {package_id} not found in hashtable")
+      #  print(f"Truck {truck_id} has {len(self.packages)} loaded packs")
 
     def calculate_distance(self, from_address, to_address, distance_matrix, address_dict):
         print(f"Checking distances from {from_address} and to: {to_address}")
@@ -39,7 +40,7 @@ class Truck:
         current_location = self.address
         total_distance = 0.0
 
-        #print(f"Beginning delivery from {current_location} with {len(self.packages)} packages")
+        print(f"Beginning delivery from {current_location} with {len(self.packages)} packages")
 
 
         while self.packages:
@@ -61,3 +62,6 @@ class Truck:
 
     def __str__(self):
         return f"Truck {self.truck_id} with {len(self.packages)} packages"
+    package_hash_table = HashTable()
+
+

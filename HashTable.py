@@ -7,39 +7,37 @@ class HashTable:
         self.table = [[] for i in range(size)]
 
     def insert(self, key, value):
-        bucket = hash(key) % len(self.table)
-        bucket_list = self.table[bucket]
-        for pair in bucket_list:
-            if pair[0] == key:
-                pair[1] = value
-                return True
+        bucket_index = key % len(self.table)
+        bucket_list = self.table[bucket_index]
 
-        key_value = [key, value]
-        bucket_list.append(key_value)
+        for i, (k, v) in enumerate(bucket_list):
+            if k == key:
+                bucket_list[i] = (key, value)
+                return True
+        bucket_list.append((key, value))
         return True
 
     def lookup(self, key):
-        index = hash(key) % len(self.table)
-        bucket= self.table[index]
+        bucket_index = key % len(self.table)
+        bucket_list = self.table[bucket_index]
 
-        print(f"Looking for key {key} at index {index}, bucket {bucket}")
+       # print(f"Looking for key {key} at index {bucket_index}, bucket {bucket_list}")
 
-        if bucket:
-            for pair in bucket:
-                if pair[0] == key:
-                    print(f"looking up key: {key} found {pair[1]}")
-                    return pair[1]
-            print(f"Looking up key {key} and found none!")
-            return None
+        for k, v in bucket_list:
+            if k == key:
+               # print(f"Key {key} found : {v}")
+                return v
+       # print(f"Key {key} not found in bucket")
+        return None
 
 
     def remove(self, key):
-        bucket = hash(key) % len(self.table)
-        bucket_list = self.table[bucket]
+        bucket_index = key % len(self.table)
+        bucket_list = self.table[bucket_index]
 
-        for index, pair in enumerate(bucket_list):
-            if pair[0] == key:
-                del bucket_list[index]
+        for i, (k, v) in enumerate(bucket_list):
+            if k == key:
+                del bucket_list[i]
                 return True
         return False
 
@@ -51,7 +49,8 @@ class HashTable:
                     result += f" Bucket {i} : Key = {key}, Value = {value}\n"
             else:
                 result += f"Bucket {i} : Empty\n"
-        return result if result != "Hashtable contents : \n" else "Hashtable is emptity bempity"
+        return result
+
 #testing data
 hash_table = HashTable(40)
 

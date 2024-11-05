@@ -30,8 +30,8 @@ def load_package(file_name, hash_table):
             hash_table.insert(id_num, p)
             #print(f"Loaded package ID: {id_num}, Address: {address}"
                 #  f", Status: {status}")
-    #print(hash_table)
-    #print(f"Total packages loaded : {sum(len(bucket) for bucket in hash_table.table)}")
+   # print(f"Total packages loaded : {sum(len(bucket) for bucket in hash_table.table)}")
+   # print(hash_table)
 
 
 
@@ -78,15 +78,26 @@ def printout_truck_load(truck):
         print(f"Package {package.id} to {package.address}")
 
 
+testing_packages = [
+    Package(id_num=77, address="Addy1", city="City1", state="State1", zip="12345", deadline="EOD", weight="123", status="At hub")
+]
 
-
+for pkg in testing_packages:
+    package_hash_table.insert(pkg.id_num, pkg)
 
 #print(package_hash_table)
 load_address("CSV/addresses.csv")
 load_package("CSV/packages.csv", package_hash_table)
+#print(package_hash_table)
 load_distance("CSV/distances.csv")
 
 
 truck_1.deliver_packages(distance_matrix, address_dict)
-#printout_truck_load(truck_1)
+for package_id in [1, 13, 14, 15, 16, 19, 20, 30, 31, 34, 37, 40]:
+    result = package_hash_table.lookup(package_id)
+    if result is None:
+        print(f"Package ID {package_id} is not found THIS IS MAIN")
+    #else:
+        #print(f"Package ID {package_id} is successfully found")
+printout_truck_load(truck_1)
 #truck_2.deliver_packages(distance_matrix, address_dict)
