@@ -17,7 +17,7 @@ def load_package(file_name, hash_table):
         csv_reader = csv.reader(pack_file)
         for row in csv_reader:
             id_num = int(row[0])
-            address = row[1]
+            address = row[1].strip().title()
             city = row[2]
             state = row[3]
             zip = row[4]
@@ -56,7 +56,7 @@ def load_address(file_name):
             index = int(row[0].strip())
             address_name = row[1].strip()
             street_address = row[2].strip()
-            address_full = f"{address_name}, {street_address}"
+            address_full = f"{address_name.lower().strip().title()}, {street_address.lower().strip().title()}"
             address_dict[address_full] = index
             address_list.append(address_full)
             #print(f"Loaded address '{address_full} with the index {index}")
@@ -73,31 +73,42 @@ truck_2 = Truck(2, 16, 18, [3, 6, 10, 11, 18, 21, 22, 23, 24, 25, 26, 27, 28, 36
 truck_3 = Truck(3, 16, 18, [2, 4, 5, 7, 8, 9, 12, 17, 32, 33, 35, 39],
                 0.0, "Western Governors University, 4001 South 700 East", datetime.timedelta(hours=11), package_hash_table)
 
+truck_1_package_ids = [1, 13, 14, 15, 16, 19, 20, 29, 30, 31, 34, 37, 40]
+truck_2_package_ids = [3, 6, 10, 11, 18, 21, 22, 23, 24, 25, 26, 27, 28, 36, 38]
+truck_3_package_ids = [2, 4, 5, 7, 8, 9, 12, 17, 32, 33, 35, 39]
 def printout_truck_load(truck):
     for package in truck.packages:
-        print(f"Package {package.id} to {package.address}")
+        print(f"Package {package.id_num} to {package.address}")
+
+def load_packages_onto_truck(truck, package_ids, package_hash_table):
+    for package_id in package_ids:
+        package = package_hash_table.lookup(package_id)
+        if package is not None:
+            truck.packages.append(package)
+            #print(f"Package ID {package_id} is loaded onto the truck {truck.truck_id}")
+        else:
+            print(f"Package {package_id} was not found in hash table for truck {truck.truck_id}")
 
 
-testing_packages = [
-    Package(id_num=77, address="Addy1", city="City1", state="State1", zip="12345", deadline="EOD", weight="123", status="At hub")
-]
 
-for pkg in testing_packages:
-    package_hash_table.insert(pkg.id_num, pkg)
 
 #print(package_hash_table)
 load_address("CSV/addresses.csv")
 load_package("CSV/packages.csv", package_hash_table)
-#print(package_hash_table)
 load_distance("CSV/distances.csv")
 
+load_packages_onto_truck(truck_1, truck_1_package_ids, package_hash_table)
+#printout_truck_load(truck_1)
+#load_packages_onto_truck(truck_2, truck_2_package_ids, package_hash_table)
+#load_packages_onto_truck(truck_3, truck_3_package_ids, package_hash_table)
 
 truck_1.deliver_packages(distance_matrix, address_dict)
 for package_id in [1, 13, 14, 15, 16, 19, 20, 30, 31, 34, 37, 40]:
     result = package_hash_table.lookup(package_id)
     if result is None:
-        print(f"Package ID {package_id} is not found THIS IS MAIN")
-    #else:
-        #print(f"Package ID {package_id} is successfully found")
+        print(f"Package ID {package_id} is not found")
+   # else:
+      #  print(f"Package ID {package_id} is successfully found")
 printout_truck_load(truck_1)
 #truck_2.deliver_packages(distance_matrix, address_dict)
+

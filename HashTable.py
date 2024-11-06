@@ -55,17 +55,6 @@ class HashTable:
 hash_table = HashTable(40)
 
 
-packagetest = Package(
-    id_num=1,
-    address="a",
-    city="a",
-    state="a",
-    zip="1234",
-    deadline="eod",
-    weight=5.0,
-    status="At hub"
-)
-
 
 #hash_table.insert(packagetest.id_num, packagetest)
 
