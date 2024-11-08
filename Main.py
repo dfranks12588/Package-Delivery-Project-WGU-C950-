@@ -1,5 +1,6 @@
 import csv
 import datetime
+from email.headerregistry import Address
 
 from HashTable import HashTable
 from Package import Package
@@ -7,9 +8,19 @@ from Truck import Truck
 
 package_hash_table = HashTable()
 packages = []
-address_dict = {}
-address_list = []
-distance_matrix = []
+
+with open("CSV/distances.csv") as distance_csv:
+    csv_distance = csv.reader(distance_csv)
+    csv_distance = list(csv_distance)
+
+with open("CSV/addresses.csv") as address_csv:
+    csv_address = csv.reader(address_csv)
+    csv_address = list(csv_address)
+
+with open("CSV/packages.csv") as package_csv:
+    csv_package = csv.reader(package_csv)
+    csv_package = list(csv_package)
+
 
 def load_package(file_name, hash_table):
     #print("Loading packages...")
@@ -34,38 +45,23 @@ def load_package(file_name, hash_table):
    # print(hash_table)
 
 
+def distance_between(a, b):
+    distance = csv_distance[a][b]
+    if distance == "":
+        distance = csv_distance[b][a]
 
-def load_distance(file_name):
-    with open(file_name, mode='r') as distance_file:
-        csv_reader = csv.reader(distance_file)
-        for row in csv_reader:
-            distance_row = []
-            for distance in row:
-                try:
-                    distance_row.append(float(distance) if distance.strip() else 0.0)
-                except ValueError:
-                    print("Error converting distance")
-                    distance_row.append(0.0)
-            distance_matrix.append(distance_row)
-
-
-def load_address(file_name):
-    with open(file_name, mode='r') as csv_file:
-        csv_reader = list(csv.reader(csv_file))
-        for row in csv_reader:
-            index = int(row[0].strip())
-            address_name = row[1].strip()
-            street_address = row[2].strip()
-            address_full = f"{address_name.lower().strip().title()}, {street_address.lower().strip().title()}"
-            address_dict[address_full] = index
-            address_list.append(address_full)
-            #print(f"Loaded address '{address_full} with the index {index}")
-
+    return distance
 
 def address_lookup(address):
-    return address_dict.get(address, None)
+    for row in csv_address:
+        full_address = f"{row[1].strip()}, {row[2].strip()}"
+        if address == full_address:
+            print(f"Found address: {row[2]} with index {row[0]}")
+            return int(row[0])
+    print(f"Address {address} not found.")
+    return None
 
-#truck_id, capacity, speed, package_id, mileage, address, depart_time
+
 truck_1 = Truck(1, 16, 18, [1, 13, 14, 15, 16, 19, 20, 29, 30, 31, 34, 37, 40],
                 0.0, "Western Governors University, 4001 South 700 East", datetime.timedelta(hours=8), package_hash_table)
 truck_2 = Truck(2, 16, 18, [3, 6, 10, 11, 18, 21, 22, 23, 24, 25, 26, 27, 28, 36, 38],
@@ -73,12 +69,10 @@ truck_2 = Truck(2, 16, 18, [3, 6, 10, 11, 18, 21, 22, 23, 24, 25, 26, 27, 28, 36
 truck_3 = Truck(3, 16, 18, [2, 4, 5, 7, 8, 9, 12, 17, 32, 33, 35, 39],
                 0.0, "Western Governors University, 4001 South 700 East", datetime.timedelta(hours=11), package_hash_table)
 
-truck_1_package_ids = [1, 13, 14, 15, 16, 19, 20, 29, 30, 31, 34, 37, 40]
-truck_2_package_ids = [3, 6, 10, 11, 18, 21, 22, 23, 24, 25, 26, 27, 28, 36, 38]
-truck_3_package_ids = [2, 4, 5, 7, 8, 9, 12, 17, 32, 33, 35, 39]
-def printout_truck_load(truck):
-    for package in truck.packages:
-        print(f"Package {package.id_num} to {package.address}")
+#truck_1_package_ids = [1, 13, 14, 15, 16]#19, 20, 29, 30, 31, 34, 37, 40]
+#truck_2_package_ids = [3, 6, 10, 11, 18, 21, 22, 23, 24, 25, 26, 27, 28, 36, 38]
+#truck_3_package_ids = [2, 4, 5, 7, 8, 9, 12, 17, 32, 33, 35, 39]
+
 
 def load_packages_onto_truck(truck, package_ids, package_hash_table):
     for package_id in package_ids:
@@ -89,26 +83,38 @@ def load_packages_onto_truck(truck, package_ids, package_hash_table):
         else:
             print(f"Package {package_id} was not found in hash table for truck {truck.truck_id}")
 
+def delivery(trucks):
+    undelivered_packages = trucks.packages.copy
+    total_distance = 0.0
+    current_location = address_lookup(trucks.start_location)
+    current_time = trucks.depart_time
+
+    while undelivered_packages:
+        nearest_package = None
+        nearest_distance = float("distance")
+
+    for package in undelivered_packages:
+        pass
 
 
 
 #print(package_hash_table)
-load_address("CSV/addresses.csv")
-load_package("CSV/packages.csv", package_hash_table)
-load_distance("CSV/distances.csv")
 
-load_packages_onto_truck(truck_1, truck_1_package_ids, package_hash_table)
+load_package("CSV/packages.csv", package_hash_table)
+
+
+
 #printout_truck_load(truck_1)
 #load_packages_onto_truck(truck_2, truck_2_package_ids, package_hash_table)
 #load_packages_onto_truck(truck_3, truck_3_package_ids, package_hash_table)
 
-truck_1.deliver_packages(distance_matrix, address_dict)
+#truck_1.deliver_packages(distance_matrix, address_dict)
 for package_id in [1, 13, 14, 15, 16, 19, 20, 30, 31, 34, 37, 40]:
     result = package_hash_table.lookup(package_id)
     if result is None:
         print(f"Package ID {package_id} is not found")
    # else:
       #  print(f"Package ID {package_id} is successfully found")
-printout_truck_load(truck_1)
+#printout_truck_load(truck_1)
 #truck_2.deliver_packages(distance_matrix, address_dict)
 
