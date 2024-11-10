@@ -21,12 +21,11 @@ class HashTable:
         bucket_index = key % len(self.table)
         bucket_list = self.table[bucket_index]
 
-       # print(f"Looking for key {key} at index {bucket_index}, bucket {bucket_list}")
+        #print(f"Looking for key {key} at index {bucket_index}, bucket {bucket_list}")
 
-        for k, v in bucket_list:
-            if k == key:
-               # print(f"Key {key} found : {v}")
-                return v
+        for item in bucket_list:
+            if key == item[0]:
+                return item[1]
        # print(f"Key {key} not found in bucket")
         return None
 
