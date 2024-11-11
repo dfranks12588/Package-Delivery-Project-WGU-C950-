@@ -1,8 +1,5 @@
 import csv
 import datetime
-from email.headerregistry import Address
-
-from unicodedata import normalize
 
 from HashTable import HashTable
 from Package import Package
@@ -89,7 +86,7 @@ def load_packages_onto_truck(truck, package_ids, package_hash_table):
 
 def delivery(truck):
     undelivered = []
-    truck.mileage = 0.0
+
     truck.address = "4001 South 700 East"
 
     for package_id in truck.package_ids:
@@ -101,6 +98,7 @@ def delivery(truck):
             print(f"Package {package_id} not found in ht for truck {truck.truck_id}")
     truck.package_ids.clear()
 
+    delivered_packages = []
     while undelivered:
         next_address = float("inf")
         next_package = None
@@ -118,34 +116,78 @@ def delivery(truck):
                     next_package = package
 
 
-        if next_package:
-            truck.packages.append(next_package)
+        if next_package is not None:
             undelivered.remove(next_package)
+            delivered_packages.append(next_package)
             truck.mileage += next_address
             truck.address = next_package.address
             truck.depart_time += datetime.timedelta(hours= next_address / truck.speed)
             next_package.delivery_time = truck.depart_time
             next_package.depart_time = truck.depart_time
         else:
-            print("No valid package breaking loop")
             break
 
+    #print(f"Truck {truck.truck_id} is currently at {truck.address} ")
+    #print(f"Undelivered packages : {[pkg.id_num for pkg in undelivered]}")
+   # print(f"Trying to deliver package  {next_package.id_num} next")
 
 load_package("CSV/packages.csv", package_hash_table)
+
 load_packages_onto_truck(truck_1, truck_1.package_ids, package_hash_table)
+load_packages_onto_truck(truck_2, truck_2.package_ids, package_hash_table)
+load_packages_onto_truck(truck_3, truck_3.package_ids, package_hash_table)
 
 delivery(truck_1)
-
-print(f" Truck {truck_1.truck_id} delivered packages: {[package.id_num for package in truck_1.packages]} ")
-print(f"It took {truck_1.mileage} miles")
+#print(f" Truck {truck_1.truck_id} delivered packages: {[package.id_num for package in truck_1.packages]} ")
+#print(f"It took {truck_1.mileage:.2f} miles")
 
 delivery(truck_2)
-print(f" Truck {truck_2.truck_id} delivered packages: {[package.id_num for package in truck_2.packages]} ")
-print(f"It took {truck_2.mileage} miles")
+#print(f" Truck {truck_2.truck_id} delivered packages: {[package.id_num for package in truck_2.packages]} ")
+#print(f"It took {truck_2.mileage:.2f} miles")
 
 delivery(truck_3)
-print(f" Truck {truck_3.truck_id} delivered packages: {[package.id_num for package in truck_3.packages]} ")
-print(f"It took {truck_3.mileage} miles")
+#print(f" Truck {truck_3.truck_id} delivered packages: {[package.id_num for package in truck_3.packages]} ")
+#print(f"It took {truck_3.mileage:.2f} miles")
+
+
 total_mileage = truck_1.mileage + truck_2.mileage + truck_3.mileage
-print(total_mileage)
-#print(package_hash_table)
+#print(f"Total mileage: {total_mileage:.2f}")
+
+
+def get_package_status(package, time):
+    if package.delivery_time is not None and package.delivery_time <= time:
+        return f"Delivered at {package.delivery_time}"
+    elif package.depart_time is not None and package.depart_time <= time:
+        return "Package en route"
+    else:
+        return "At the hub"
+
+
+
+def user_interface():
+    print("Welcome to Western Governors University Parcel Service")
+    print(f"The total mileage for the package delivery is: {total_mileage}")
+
+    while True:
+        print("\nEnter a time (HH:MM:SS, as in Hours, Minutes, and Seconds) to see the status of all packages or 'exit' to quit")
+        user_input = input("Time: ")
+
+        if user_input.lower() == 'exit':
+            break
+
+        try:
+            (hours, minutes, seconds) = user_input.split(":")
+            converted_time = datetime.timedelta(hours=int(hours), minutes=int(minutes), seconds=int(seconds))
+
+            for package_id in range(1, len(package_hash_table.table)+1):
+                package = package_hash_table.lookup(package_id)
+
+                if package:
+                    status = get_package_status(package, converted_time)
+                    print(f"Package {package_id} status at {converted_time}: {status}")
+                else:
+                    print(f"Package {package_id} not found!")
+        except ValueError:
+            print("Invalid time format, please enter time as HH:MM:SS ")
+
+user_interface()
