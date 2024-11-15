@@ -86,8 +86,7 @@ def delivery(truck):
 
     for package_id in truck.package_ids:
         package = package_hash_table.lookup(package_id)
-        if package is not None:
-            undelivered.append(package)
+        undelivered.append(package)
 
     truck.package_ids.clear()
     delivered_packages = []
@@ -97,26 +96,27 @@ def delivery(truck):
         next_package = None
 
         for package in undelivered:
-            truck_index = address_lookup(truck.address)
-            package_index = address_lookup(package.address)
+            #truck_index = address_lookup(truck.address)
+            #package_index = address_lookup(package.address)
+                                            #a                                 b
+           if distance_between(address_lookup(truck.address), address_lookup(package.address)) <= next_address:
+            next_address = distance_between(address_lookup(truck.address), address_lookup(package.address))
+            next_package = package
 
-            if truck_index is not None and package_index is not None:
-                distance = distance_between(address_lookup(truck.address), address_lookup(package.address))
-
-                if distance < next_address:
-                    next_address = distance
-                    next_package = package
-
-
-        if next_package is not None:
+            truck.package_ids.append(next_package.id_num)
             undelivered.remove(next_package)
-            delivered_packages.append(next_package)
             truck.mileage += next_address
             truck.address = next_package.address
-            if next_package.depart_time is None:
-                next_package.depart_time = truck.depart_time
+            truck.depart_time += datetime.timedelta(hours=next_address / truck.speed)
+            next_package.delivery_time = truck.depart_time
+            next_package.depart_time = truck.depart_time
 
             travel_time = next_address / truck.speed
+           # print(f"Traveling from {truck.address} to {next_package.address}")
+            #print(f"Distance to next package: {next_address} miles")
+            #print(f"Calculated travel time to next package: {travel_time} hours")
+
+
             print(f"Before travel: {truck.depart_time}")
             truck.depart_time += datetime.timedelta(hours= travel_time)
             print(f"After travel: {truck.depart_time}")
@@ -151,80 +151,43 @@ total_mileage = truck_1.mileage + truck_2.mileage + truck_3.mileage
 
 
 
-def get_package_status(package, time):
-    if package.delivery_time is not None and package.delivery_time <= time:
-        return f"Delivered at {package.delivery_time}"
-    elif package.depart_time is not None and package.depart_time <= time and package.delivery_time is None:
-        return "Package en route"
-    else:
-        return "At the hub"
-
-
-
 def user_interface():
-    print("Welcome to Western Governors University Parcel Service")
-    print(f"The total mileage for the package delivery is: {total_mileage:.2f}")
-    while True:
+    print(f"The total mileage of all trucks is: {total_mileage}")
+    print("To see the status of all packages at a given time, enter '1'")
+    print("To see the status of a certain package at a given time, enter '2'")
+    print("To exit, enter '3'")
+    user_input = input("Please select an option (1/2/3) ")
 
-        print("Please select an option: ")
-        print("1. View the status of all packages at a certain time")
-        print("2. Check the status of a single package")
-        print("3. Exit")
-        user_input = input("Please choose an option (1/2/3): ")
+    if user_input == "1":
 
-        if user_input == "1":
+        try:
+            time_input = input("Please enter a time to check the status "
+                               "of all packages in the following format: HH:MM:SS ")
+            (hours, minutes, seconds) = time_input.split(":")
+            converted_time = datetime.timedelta(hours=int(hours), minutes=int(minutes),
+                                                           seconds=int(seconds))
+            for package_id in range(1, len(package_hash_table.table) +1):
+                package = package_hash_table.lookup(package_id)
+                package.status_update(converted_time)
+                print(f"Package {package_id} status at {converted_time} : {package.status}")
 
-            user_time_input = input("\nEnter a time (HH:MM:SS, as in Hours, Minutes, and Seconds) to see the status of all packages or 'exit' to quit\n")
-            if user_time_input.lower() == "exit":
-                break
+        except ValueError:
+            print("Invalid input, please try again")
 
-            try:
-                (hours, minutes, seconds) = user_time_input.split(":")
-                converted_time = datetime.timedelta(hours=int(hours), minutes=int(minutes), seconds=int(seconds))
 
-                for package_id in range(1, len(package_hash_table.table)+1):
-                    package = package_hash_table.lookup(package_id)
+    if user_input == "2":
 
-                    if package:
-                        status = get_package_status(package, converted_time)
-                        print(f"Package {package_id} status at {converted_time}: {status}")
-                    else:
-                        print(f"Package {package_id} not found!")
-            except ValueError:
-                print("Invalid time format, please enter time as HH:MM:SS ")
-
-        elif user_input == "2":
-            package_id = input("Enter a package ID to check its status: ")
-            if package_id.lower() == "exit":
-                break
+        try:
+            package_input = input("Please enter a package ID to check its status: ")
 
             try:
-                package = package_hash_table.lookup(int(package_id))
-
-                if package:
-                    package_time = input(f"Enter a time you wish to check {package_id}'s status (HH:MM:SS)")
-
-                    try:
-                        (hours, minutes, seconds) = package_time.split(":")
-                        converted_time = datetime.timedelta(hours=int(hours), minutes=int(minutes),
-                                                            seconds=int(seconds))
-
-                        status = get_package_status(package, converted_time)
-                        print(f"Package {package_id} status at : {status}")
-                    except ValueError:
-
-                        print("Invalid time format, please enter time as HH:MM:SS")
-                else:
-                    print(f"Package {package_id} not found")
+                time_input = input(f"Please enter a time to check the status of {package_input}: ")
+                (hours, minutes, seconds) = time_input.split(":")
+                converted_time = datetime.timedelta(hours=int(hours), minutes=int(minutes),
+                                                 seconds=int(seconds))
 
             except ValueError:
-                print("Please enter a valid package ID.")
-
-        elif user_input == "3":
-            print("Exiting...")
-            break
-
-        else:
-            print("Invalid choice, please select 1, 2, or 3.")
-
+                print("Invalid input, please try again")
+        except ValueError:
+            print("Invalid package ID, please try again.")
 user_interface()
