@@ -1,4 +1,3 @@
-from pickle import PROTO
 
 
 class Package:
@@ -27,12 +26,11 @@ class Package:
     def status_update(self, current_time):
 
         if self.depart_time is None or current_time < self.depart_time:
-            self.status = "Package is at the hub"
+            self.status = "At the hub"
 
         elif self.delivery_time is not None and current_time >= self.delivery_time:
             self.status = "Package has been delivered."
 
-
         else:
-            self.status = "Package is en route"
+            self.status = "En route"
 

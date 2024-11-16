@@ -1,10 +1,8 @@
-from Package import Package
 from HashTable import HashTable
 
 
 class Truck:
-    def __init__(self, truck_id, capacity, speed, weight, package_ids, mileage, address, depart_time, package_hash_table
-                 ):
+    def __init__(self, truck_id, capacity, speed, weight, package_ids, mileage, address, depart_time, package_hash_table):
         self.truck_id = truck_id
         self.capacity = capacity
         self.speed = speed
