@@ -6,28 +6,34 @@ from Truck import Truck
 
 package_hash_table = HashTable()
 
-with open("CSV/distances.csv") as distance_csv:
+with open("CSV/distances.csv", encoding="utf-8-sig") as distance_csv:
     csv_distance = csv.reader(distance_csv)
     csv_distance = list(csv_distance)
 
-with open("CSV/addresses.csv") as address_csv:
+
+
+with open("CSV/packages.csv", encoding="utf-8-sig") as package_csv:
+    csv_package = csv.reader(package_csv)
+    csv_package = list(csv_package)
+#print(csv_package)
+#print(package_hash_table)
+
+with open ("CSV/addresses.csv") as address_csv:
     csv_address = csv.reader(address_csv)
     csv_address = list(csv_address)
 
-with open("CSV/packages.csv") as package_csv:
-    csv_package = csv.reader(package_csv)
-    csv_package = list(csv_package)
 
 def load_package(file_name, hash_table):
-    with open(file_name, mode='r') as pack_file:
+    with open(file_name, mode='r', encoding="utf-8-sig") as pack_file:
         csv_reader = csv.reader(pack_file)
         for row in csv_reader:
-            id_num = int(row[0])
+            print(f"Row data: {row}")
+            id_num = int(row[0].strip())
             address = row[1].strip().title()
-            city = row[2]
-            state = row[3]
-            zip = row[4]
-            deadline = row[5]
+            city = row[2].strip().title()
+            state = row[3].strip().upper()
+            zip = row[4].strip()
+            deadline = row[5].strip()
             weight = row[6]
             status = row[7]
 
@@ -98,9 +104,9 @@ def delivery(truck):
 load_package("CSV/packages.csv", package_hash_table)
 
 
-delivery(truck_1)
-delivery(truck_2)
-delivery(truck_3)
+#delivery(truck_1)
+#(truck_2)
+#delivery(truck_3)
 total_mileage = truck_1.mileage + truck_2.mileage + truck_3.mileage
 
 def user_interface():
@@ -160,4 +166,10 @@ def user_interface():
 
         else:
             print("Invalid choice, please select 1, 2, or 3.")
-user_interface()
+#user_interface()
+
+
+
+
+
+
