@@ -50,19 +50,3 @@ class HashTable:
                 result += f"Bucket {i} : Empty\n"
         return result
 
-#testing data
-hash_table = HashTable(40)
-
-
-
-#hash_table.insert(packagetest.id_num, packagetest)
-
-#print(hash_table.lookup(1))
-#hash_table.insert(packagetest.id_num, packagetest)
-#hash_table.lookup(1)
-#truck1 = Truck(truck_id=1, capacity=10, speed=50, package_ids=[1, 13, 14], mileage=0, address="Start", depart_time="08:00", package_hash_table=hash_table)
-#insert_test = hash_table.lookup("grade_one")
-#print(f"The value of the key is {insert_test}")
-
-#remove_test = hash_table.remove("grade_one")
-#print(f"Key 'grade_one' removed: {remove_test}" )

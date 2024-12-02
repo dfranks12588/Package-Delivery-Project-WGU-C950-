@@ -25,7 +25,7 @@ class Package:
 
     def status_update(self, current_time):
 
-        if self.depart_time is None or current_time < self.depart_time:
+        if self.delivery_time is None or current_time < self.depart_time:
             self.status = "At the hub"
 
         elif self.delivery_time is not None and current_time >= self.delivery_time:
