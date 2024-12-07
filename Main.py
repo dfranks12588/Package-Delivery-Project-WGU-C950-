@@ -61,14 +61,38 @@ def delivery(truck):
 
     for package_id in truck.package_ids:
         package = package_hash_table.lookup(package_id)
-        undelivered.append(package)
+        distance = distance_between(address_lookup(truck.address), address_lookup(package.address))
+        undelivered.append((distance, package))
 
     truck.package_ids.clear()
 
     while undelivered:
-        next_address = float("inf")
-        next_package = None
+        #next_address = float("inf")
+        #next_package = None
 
+        undelivered.sort(key=lambda x:x[0])
+        next_package = undelivered.pop(0)[1]
+        next_address = distance_between(address_lookup(truck.address), address_lookup(next_package.address))
+
+        truck.mileage += next_address
+        truck.address = next_package.address
+        truck.time += datetime.timedelta(hours=next_address / truck.speed)
+
+        next_package.delivery_time = truck.time
+        next_package.depart_time = truck.depart_time
+
+        next_package.status = "DELIVERED"
+
+
+
+        undelivered = [(distance, pack) for distance, pack in undelivered if pack !=next_package]
+        undelivered.insert(0, (next_address, next_package))
+        print(f"Delivered package {next_package.id_num} to {next_package.address}")
+        print(f"Truck mileage: {truck.mileage:.2f} miles")
+        print(f"Del time {truck.time}")
+
+
+        """
         for package in undelivered:
 
            if distance_between(address_lookup(truck.address), address_lookup(package.address)) <= next_address:
@@ -96,7 +120,7 @@ def delivery(truck):
         else:
             break
 
-
+        """
 load_package("CSV/packages.csv", package_hash_table)
 
 
@@ -162,7 +186,7 @@ def user_interface():
 
         else:
             print("Invalid choice, please select 1, 2, or 3.")
-user_interface()
+#user_interface()
 
 
 
