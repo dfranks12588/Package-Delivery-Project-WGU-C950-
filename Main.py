@@ -21,6 +21,7 @@ with open ("CSV/addresses.csv") as address_csv:
     csv_address = list(csv_address)
 
 
+
 def load_package(file_name, hash_table):
     with open(file_name, mode='r', encoding="utf-8-sig") as pack_file:
         csv_reader = csv.reader(pack_file)
@@ -48,10 +49,10 @@ def distance_between(a, b):
         distance = csv_distance[b][a]
     return float(distance)
 
-truck_1 = Truck(1, 16, 18,0.0,  [1, 13, 14, 15, 16, 20, 29, 30, 31, 34, 37, 40],
+truck_1 = Truck(1, 16, 18,0.0,  [1, 13, 14, 15, 16, 19, 20, 29, 30, 31, 34, 37, 40],
                 0.0, "4001 South 700 East", depart_time=datetime.timedelta(hours=8))
-truck_2 = Truck(2, 16, 18, 0.0, [3, 6, 10, 11, 18, 21, 22, 23, 24, 25, 26, 27, 28, 36, 38],
-                0.0, "4001 South 700 East", depart_time=datetime.timedelta(hours = 10))
+truck_2 = Truck(2, 16, 18, 0.0, [3, 6, 10, 11, 12, 18, 21, 22, 23, 24, 25, 26, 27, 28, 36, 38],
+                0.0, "4001 South 700 East", depart_time=datetime.timedelta(hours =9, minutes=5))
 truck_3 = Truck(3, 16, 18, 0.0,  [2, 4, 5, 7, 8, 9, 17, 32, 33, 35, 39],
                 0.0, "4001 South 700 East", depart_time=datetime.timedelta(hours=11))
 
@@ -64,14 +65,16 @@ def delivery(truck):
         distance = distance_between(address_lookup(truck.address), address_lookup(package.address))
         undelivered.append((distance, package))
 
+    #undelivered.sort(key=lambda x: x[0])
     truck.package_ids.clear()
 
     while undelivered:
-        #next_address = float("inf")
-        #next_package = None
 
-        undelivered.sort(key=lambda x:x[0])
-        next_package = undelivered.pop(0)[1]
+
+        next_package = min(undelivered, key=lambda  x:x[0])
+        undelivered.remove(next_package)
+
+        distance, next_package = next_package
         next_address = distance_between(address_lookup(truck.address), address_lookup(next_package.address))
 
         truck.mileage += next_address
@@ -81,46 +84,15 @@ def delivery(truck):
         next_package.delivery_time = truck.time
         next_package.depart_time = truck.depart_time
 
-        next_package.status = "DELIVERED"
-
-
-
-        undelivered = [(distance, pack) for distance, pack in undelivered if pack !=next_package]
-        undelivered.insert(0, (next_address, next_package))
-        print(f"Delivered package {next_package.id_num} to {next_package.address}")
+        """print(f"Delivered package {next_package.id_num} to {next_package.address}")
         print(f"Truck mileage: {truck.mileage:.2f} miles")
-        print(f"Del time {truck.time}")
+        print(f"Delivery time: {truck.time}")
+        print(f"Truck's new address: {truck.address}")"""
+
+        undelivered = [(distance_between(address_lookup(truck.address), address_lookup(pack.address)), pack)
+                       for distance, pack in undelivered]
 
 
-        """
-        for package in undelivered:
-
-           if distance_between(address_lookup(truck.address), address_lookup(package.address)) <= next_address:
-                next_address = distance_between(address_lookup(truck.address), address_lookup(package.address))
-                next_package = package
-
-
-                truck.package_ids.append(next_package.id_num)
-                undelivered.remove(next_package)
-
-                truck.mileage += next_address
-
-                truck.address = next_package.address
-
-                truck.time += datetime.timedelta(hours=next_address / truck.speed)
-
-                next_package.delivery_time = truck.time
-                next_package.depart_time = truck.depart_time
-
-                travel_time = next_address / truck.speed
-                #print(f"Traveling from {truck.address} to {next_package.address}")
-                #truck.depart_time += datetime.timedelta(hours= travel_time)
-
-
-        else:
-            break
-
-        """
 load_package("CSV/packages.csv", package_hash_table)
 
 
@@ -128,7 +100,22 @@ delivery(truck_1)
 delivery(truck_2)
 delivery(truck_3)
 total_mileage = truck_1.mileage + truck_2.mileage + truck_3.mileage
-#print(total_mileage)
+
+
+def print_delivery_times():
+    print("Delivery time for all packages:")
+    for package_id in range(1, len(package_hash_table.table) +1):
+        package = package_hash_table.lookup(package_id)
+        if package:
+            print(f"Package {package.id_num} delivered at {package.delivery_time}")
+print_delivery_times()
+
+
+"""print(f"The total mileage of all trucks is: {total_mileage}")
+print(f"Truck 1's total mileage is: {truck_1.mileage}")
+print(f"Truck 2's total mileage is: {truck_2.mileage}")
+print(f"Truck 3's total mileage is: {truck_3.mileage}")"""
+
 def user_interface():
     print(f"The total mileage of all trucks is: {total_mileage}")
     while True:
@@ -186,7 +173,7 @@ def user_interface():
 
         else:
             print("Invalid choice, please select 1, 2, or 3.")
-#user_interface()
+user_interface()
 
 
 
