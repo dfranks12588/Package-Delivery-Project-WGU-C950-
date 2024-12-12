@@ -1,6 +1,4 @@
-from HashTable import HashTable
-
-
+# Truck class that holes the truck data for use in the main file
 class Truck:
     def __init__(self, truck_id, capacity, speed, weight, package_ids, mileage, address, depart_time):
         self.truck_id = truck_id

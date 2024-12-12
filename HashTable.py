@@ -2,18 +2,21 @@
 from Package import Package
 
 class HashTable:
-
+# Creates an instance of a hash table with an empty list for each bucket
     def __init__(self, size=40):
         self.table = [[] for i in range(size)]
-
+# Inserts the key-value pairs into the hash table
     def insert(self, key, value):
         bucket_index = key % len(self.table)
         bucket_list = self.table[bucket_index]
 
+        # If the key already exists the value is replaced
         for i, (k, v) in enumerate(bucket_list):
             if k == key:
                 bucket_list[i] = (key, value)
                 return True
+
+        #Otherwise append a new kay-value pair
         bucket_list.append((key, value))
         return True
 

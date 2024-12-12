@@ -1,5 +1,4 @@
-
-
+# Holds package data
 class Package:
     def __init__(self, id_num, address, city, state, zip, deadline, weight, status):
         self.id_num = id_num
@@ -22,7 +21,7 @@ class Package:
                 f"Weight: {self.weight}\n"
                 f"Status: {self.status}"
                 )
-
+# Updates the status of the package based on the current time
     def status_update(self, current_time):
 
         if self.delivery_time is None or current_time < self.depart_time:
