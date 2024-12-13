@@ -104,6 +104,19 @@ def delivery(truck):
 # Calls the load package function
 load_package("CSV/packages.csv", package_hash_table)
 
+# Assigns truck ID's to package for the user interface
+for package_id in truck_1.package_ids:
+    package = package_hash_table.lookup(package_id)
+    if package:
+        package.truck_id = truck_1.truck_id
+for package_id in truck_2.package_ids:
+    package = package_hash_table.lookup(package_id)
+    if package:
+        package.truck_id = truck_2.truck_id
+for package_id in truck_3.package_ids:
+    package = package_hash_table.lookup(package_id)
+    if package:
+        package.truck_id = truck_3.truck_id
 # Calls the delivery function to simulate delivery with each of three trucks
 delivery(truck_1)
 delivery(truck_2)
@@ -115,7 +128,7 @@ total_mileage = truck_1.mileage + truck_2.mileage + truck_3.mileage
 # Terminal window user interface function
 def user_interface():
     # Prints out total mileage and gives user three initial options and loops continuously until the user exits.
-    print(f"The total mileage of all trucks is: {total_mileage}")
+    print(f"The total mileage of all trucks is: {total_mileage:.2f}")
     while True:
         print("To see the status of all packages at a given time, enter '1'")
         print("To see the status of a certain package at a given time, enter '2'")

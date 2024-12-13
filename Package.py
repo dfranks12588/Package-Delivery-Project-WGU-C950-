@@ -12,6 +12,7 @@ class Package:
         self.delivery_time = None
         self.depart_time = None
         self.corrected_address = None
+        self.truck_id = None
 
     def __str__(self):
         return (f"Package ID: {self.id_num}\n"
@@ -26,11 +27,11 @@ class Package:
     def status_update(self, current_time):
 
         if self.delivery_time is None or current_time < self.depart_time:
-            self.status = "At the hub"
+            self.status = f"At the hub (Assigned to Truck {self.truck_id})"
 
         elif self.delivery_time is not None and current_time >= self.delivery_time:
-            self.status = "Package has been delivered."
+            self.status = f"Package has been delivered at {self.delivery_time} by Truck {self.truck_id}"
 
         else:
-            self.status = "En route"
+            self.status = f"En route on Truck {self.truck_id}"
 
