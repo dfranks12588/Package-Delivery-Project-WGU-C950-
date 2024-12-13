@@ -1,10 +1,9 @@
 
-from Package import Package
-
 class HashTable:
 # Creates an instance of a hash table with an empty list for each bucket
     def __init__(self, size=40):
         self.table = [[] for i in range(size)]
+
 # Inserts the key-value pairs into the hash table
     def insert(self, key, value):
         bucket_index = key % len(self.table)
@@ -20,19 +19,19 @@ class HashTable:
         bucket_list.append((key, value))
         return True
 
+# Finds the index of the bucket where the key should be to lookup packages
     def lookup(self, key):
         bucket_index = key % len(self.table)
         bucket_list = self.table[bucket_index]
 
-        #print(f"Looking for key {key} at index {bucket_index}, bucket {bucket_list}")
-
+# Loops through the items in the buckets to find the key-value pair
         for item in bucket_list:
+            # If the key matches, this returns the associated value
             if key == item[0]:
                 return item[1]
-       # print(f"Key {key} not found in bucket")
         return None
 
-
+# Finds the index of the bucket where the key should be to remove packages
     def remove(self, key):
         bucket_index = key % len(self.table)
         bucket_list = self.table[bucket_index]
@@ -43,13 +42,5 @@ class HashTable:
                 return True
         return False
 
-    def __str__(self):
-        result = "Hashtable contents : \n"
-        for i, bucket in enumerate(self.table):
-            if bucket:
-                for key, value in bucket:
-                    result += f" Bucket {i} : Key = {key}, Value = {value}\n"
-            else:
-                result += f"Bucket {i} : Empty\n"
-        return result
+
 

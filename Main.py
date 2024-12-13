@@ -4,6 +4,8 @@ from HashTable import HashTable
 from Package import Package
 from Truck import Truck
 #Daniel Franks WGU C950 Student ID: 006310287
+
+# Creates an instance of the hash table
 package_hash_table = HashTable()
 
 #Opens two CSV files for later use using the csv library
@@ -11,11 +13,6 @@ with open("CSV/distances.csv", encoding="utf-8-sig") as distance_csv:
     csv_distance = csv.reader(distance_csv)
     csv_distance = list(csv_distance)
 
-"""
-with open("CSV/packages.csv", encoding="utf-8-sig") as package_csv:
-    csv_package = csv.reader(package_csv)
-    csv_package = list(csv_package)
-"""
 
 with open ("CSV/addresses.csv") as address_csv:
     csv_address = csv.reader(address_csv)
@@ -112,20 +109,12 @@ delivery(truck_1)
 delivery(truck_2)
 delivery(truck_3)
 
+# Calculates the total mileage
 total_mileage = truck_1.mileage + truck_2.mileage + truck_3.mileage
 
-
-def print_delivery_times():
-    print("Delivery time for all packages:")
-    for package_id in range(1, len(package_hash_table.table) +1):
-        package = package_hash_table.lookup(package_id)
-        if package:
-            print(f"Package {package.id_num} delivered at {package.delivery_time}")
-print_delivery_times()
-
-
-
+# Terminal window user interface function
 def user_interface():
+    # Prints out total mileage and gives user three initial options and loops continuously until the user exits.
     print(f"The total mileage of all trucks is: {total_mileage}")
     while True:
         print("To see the status of all packages at a given time, enter '1'")
@@ -134,32 +123,38 @@ def user_interface():
         user_input = input("Please select an option (1/2/3): ")
 
         if user_input == "1":
-
+        # If "1" is entered, allows user to enter a time to see the delivery status of all packages
             try:
                 time_input = input("Please enter a time to check the status "
                                    "of all packages in the following format: HH:MM:SS ")
+                # Converts user input into the correct format for comparison
                 (hours, minutes, seconds) = time_input.split(":")
                 converted_time = datetime.timedelta(hours=int(hours), minutes=int(minutes), seconds=int(seconds))
 
+                # Loops through all packages in the hash table to display the status
                 print(f"Status of all packages at {converted_time}")
                 for package_id in range(1, len(package_hash_table.table) +1):
                     package = package_hash_table.lookup(package_id)
-                    #update 9
-                    if package.id_num == 9 and converted_time >= package.correction_time:
+
+                    # Special handling for package 9 which has a corrected address after 10:20:00
+                    if package.id_num == 9 and converted_time >= package.corrected_time:
                         package.address = package.corrected_address
 
                     package.status_update(converted_time)
                     print(f"Package {package_id} status at {converted_time} : {package.status}")
 
+            # Only prints out if user entered something other than the correct format of HH:MM:SS
             except ValueError:
                 print("Invalid input, please try again")
 
 
-
         elif user_input == "2":
+        # Option 2 displays the status of a particular package at a user chosen time
+
             package_id = input("Enter a package ID to check its status: ")
 
             try:
+            # Uses the lookup function from the hash table by package ID
                 package = package_hash_table.lookup(int(package_id))
 
                 if package:
@@ -168,8 +163,12 @@ def user_interface():
                     try:
                         (hours, minutes, seconds) = package_time.split(":")
                         converted_time = datetime.timedelta(hours=int(hours), minutes=int(minutes), seconds=int(seconds))
+
+                        # Updates and displays package status
                         package.status_update(converted_time)
                         print(f"Package {package_id} status at : {package.status}")
+
+                        # Checks if the package was delivered at the specific time
                         if package.delivery_time is not None and converted_time >= package.delivery_time:
                             print(f"Package {package_id} was delivered to {package.address} at {package.delivery_time}")
                         else:
@@ -178,6 +177,7 @@ def user_interface():
                         print("Invalid time format, please enter time as HH:MM:SS")
 
                 else:
+                    # Handles case where package is not found in the hash table
                     print(f"Package {package_id} not found")
 
 

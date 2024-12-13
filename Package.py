@@ -11,6 +11,7 @@ class Package:
         self.status = status
         self.delivery_time = None
         self.depart_time = None
+        self.corrected_address = None
 
     def __str__(self):
         return (f"Package ID: {self.id_num}\n"
