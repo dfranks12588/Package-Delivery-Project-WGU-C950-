@@ -162,7 +162,7 @@ def user_interface():
 
 
         elif user_input == "2":
-        # Option 2 displays the status of a particular package at a user chosen time
+        # Option 2 displays the status and attributes of a particular package at a user chosen time
 
             package_id = input("Enter a package ID to check its status: ")
 
@@ -179,13 +179,10 @@ def user_interface():
 
                         # Updates and displays package status
                         package.status_update(converted_time)
-                        print(f"Package {package_id} status at : {package.status}")
 
-                        # Checks if the package was delivered at the specific time
-                        if package.delivery_time is not None and converted_time >= package.delivery_time:
-                            print(f"Package {package_id} was delivered to {package.address} at {package.delivery_time}")
-                        else:
-                            print(f"Package {package_id} has not been delivered yet.")
+                    # Implements lookup functionality to show all data components of the selected package
+                        print(f"\nPackage details at {converted_time}: \n{package}")
+
                     except ValueError:
                         print("Invalid time format, please enter time as HH:MM:SS")
 
