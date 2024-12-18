@@ -177,6 +177,15 @@ def user_interface():
                         (hours, minutes, seconds) = package_time.split(":")
                         converted_time = datetime.timedelta(hours=int(hours), minutes=int(minutes), seconds=int(seconds))
 
+                        # Special handling for package 9 has a corrected address after 10:20:00
+                        if package.id_num == 9:
+                            if converted_time >= package.corrected_time:
+
+                                package.address = package.corrected_address
+
+                            else:
+
+                                package.address = "300 State St"
                         # Updates and displays package status
                         package.status_update(converted_time)
 
