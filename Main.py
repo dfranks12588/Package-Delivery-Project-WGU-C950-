@@ -38,7 +38,7 @@ def load_package(file_name, hash_table):
 #Alters the delivery address of package #9 at the time WGUPS is notified of the change
     package_9 = hash_table.lookup(9)
     if package_9:
-        package_9.address = "410 S State St"
+        package_9.corrected_address = "410 S State St"
         package_9.city = "Salt Lake City"
         package_9.state = "UT"
         package_9.zip = "84111"
@@ -178,14 +178,14 @@ def user_interface():
                         converted_time = datetime.timedelta(hours=int(hours), minutes=int(minutes), seconds=int(seconds))
 
                         # Special handling for package 9 has a corrected address after 10:20:00
-                        if package.id_num == 9:
-                            if converted_time >= package.corrected_time:
+                        if package.id_num == 9 and converted_time >= package.corrected_time:
+                            package.address = package.corrected_address
 
-                                package.address = package.corrected_address
+                        else:
+                            package.address = "300 State St"
 
-                            else:
 
-                                package.address = "300 State St"
+
                         # Updates and displays package status
                         package.status_update(converted_time)
 
